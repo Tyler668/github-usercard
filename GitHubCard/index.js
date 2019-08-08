@@ -24,7 +24,13 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
 
 
 const container = document.querySelector('.cards');
@@ -76,11 +82,37 @@ function createCard(profileObj){
   return card;
 }
 
-
+// This gets my profile and makes the card ===
 axios.get('https://api.github.com/users/Tyler668')
 .then( response =>{
   container.appendChild(createCard(response.data));
 });
+
+// This finds all my followers and makes cards for them ===
+axios.get('https://api.github.com/users/Tyler668')
+.then( response =>{
+  const followersURL = response.data.followers_url;
+  // console.log(followersURL);
+  axios.get(followersURL)
+  .then(response =>{
+    response.data.forEach(e =>{
+      container.appendChild(createCard(e));
+    })
+    
+  });
+
+});
+
+
+// This found all the professor profiles using the array of just their handles, then makes cards for em ===
+followersArray.forEach(item =>{
+const urlString = `https://api.github.com/users/${item}`;
+axios.get(urlString)
+.then(response =>{
+  container.appendChild(createCard(response.data));
+});
+});
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
