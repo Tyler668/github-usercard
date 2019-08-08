@@ -24,7 +24,99 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
+
+const container = document.querySelector('.cards');
+
+function createCard(profileObj) {
+  // Create elements ===
+  const card = document.createElement('div');
+  const proPic = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const username = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const linkToPage = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+  // Structure elements ===
+  card.appendChild(proPic);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(linkToPage);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+
+  // Element class assignment ===
+  card.classList.add('card');
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  username.classList.add('username');
+
+  // Element content ===
+  proPic.src = profileObj.avatar_url;
+  name.textContent = profileObj.name;
+  username.textContent = profileObj.login;
+  location.textContent = `Location: ${profileObj.location}`;
+  
+  linkToPage.href = profileObj.html_url;
+  linkToPage.textContent = profileObj.html_url;
+  profile.textContent = `Profile: `;
+  followers.textContent = `Followers: ${profileObj.followers}`;
+  following.textContent = `Following: ${profileObj.following}`;
+  bio.textContent = `Bio: ${profileObj.bio}`;
+
+  return card;
+}
+
+// This gets a profile and makes the card ===
+function grabProfile(url) {
+  axios.get(url)
+    .then(response => {
+      container.appendChild(createCard(response.data));
+    });
+};
+
+grabProfile('https://api.github.com/users/Tyler668');
+
+
+// This finds all my followers and makes cards for them ===
+axios.get('https://api.github.com/users/Tyler668')
+  .then(response => {
+    const followersURL = response.data.followers_url;
+    axios.get(followersURL)
+      .then(response2 => {
+        response2.data.forEach(e => {
+          const followerProfile = e.login;
+          grabProfile(`https://api.github.com/users/${followerProfile}`);
+        });
+      });
+  });
+
+
+// This found all the professor profiles using the array of just their handles, then makes cards for 'em ===
+followersArray.forEach(item => {
+  const urlString = `https://api.github.com/users/${item}`;
+  axios.get(urlString)
+    .then(response => {
+      container.appendChild(createCard(response.data));
+    });
+});
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -35,7 +127,7 @@ const followersArray = [];
     <h3 class="name">{users name}</h3>
     <p class="username">{users user name}</p>
     <p>Location: {users location}</p>
-    <p>Profile:  
+    <p>Profile:
       <a href={address to users github page}>{address to users github page}</a>
     </p>
     <p>Followers: {users followers count}</p>
@@ -46,7 +138,7 @@ const followersArray = [];
 
 */
 
-/* List of LS Instructors Github username's: 
+/* List of LS Instructors Github username's:
   tetondan
   dustinmyers
   justsml
