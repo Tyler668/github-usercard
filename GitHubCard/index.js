@@ -35,7 +35,7 @@ const followersArray = [
 
 const container = document.querySelector('.cards');
 
-function createCard(profileObj){
+function createCard(profileObj) {
   // Create elements ===
   const card = document.createElement('div');
   const proPic = document.createElement('img');
@@ -70,11 +70,11 @@ function createCard(profileObj){
   // Element content ===
   proPic.src = profileObj.avatar_url;
   name.textContent = profileObj.name;
-  username.textContent = profileObj.Login;
+  username.textContent = profileObj.login;
   location.textContent = `Location: ${profileObj.location}`;
-  profile.textContent = `Profile: `;
+  profile.textContent = `Profile: ${profileObj.html_url}`;
   linkToPage.href = profileObj.html_url;
-  linkToPage.textContent = `Go to user's page`;
+  linkToPage.textContent = profileObj.html_url;;
   followers.textContent = `Followers: ${profileObj.followers}`;
   following.textContent = `Following: ${profileObj.following}`;
   bio.textContent = `Bio: ${profileObj.bio}`;
@@ -83,34 +83,44 @@ function createCard(profileObj){
 }
 
 // This gets my profile and makes the card ===
-axios.get('https://api.github.com/users/Tyler668')
-.then( response =>{
-  container.appendChild(createCard(response.data));
-  console.log(response.data);
-});
+function grabProfile(url) {
+  axios.get(url)
+    .then(response => {
+      container.appendChild(createCard(response.data));
+      // console.log(response.data);
+    });
+}
+
+grabProfile('https://api.github.com/users/Tyler668');
+// grabProfile('https://github.com/rogermcconkiejr');
+// grabProfile('https://github.com/rojcewiczj');
+// grabProfile('https://github.com/tetondan');
+
 
 // This finds all my followers and makes cards for them ===
 axios.get('https://api.github.com/users/Tyler668')
-.then( response =>{
-  const followersURL = response.data.followers_url;
-  axios.get(followersURL)
-  .then(response =>{
-    response.data.forEach(e =>{
-      container.appendChild(createCard(e));
-      // console.log(e);
-    })
-  });
+  .then(response => {
+    const followersURL = response.data.followers_url;
+    axios.get(followersURL)
+      .then(response2 => {
+        // console.log(response2); // This .data will give the array of incomplete profiles if you want to just use that
+        response2.data.forEach(e => {
+          const followerProfile = e.login;
+          grabProfile(`https://api.github.com/users/${followerProfile}`);
 
-});
+        });
+      });
+
+  });
 
 
 // This found all the professor profiles using the array of just their handles, then makes cards for 'em ===
-followersArray.forEach(item =>{
-const urlString = `https://api.github.com/users/${item}`;
-axios.get(urlString)
-.then(response =>{
-  container.appendChild(createCard(response.data));
-});
+followersArray.forEach(item => {
+  const urlString = `https://api.github.com/users/${item}`;
+  axios.get(urlString)
+    .then(response => {
+      container.appendChild(createCard(response.data));
+    });
 });
 
 
@@ -123,7 +133,7 @@ axios.get(urlString)
     <h3 class="name">{users name}</h3>
     <p class="username">{users user name}</p>
     <p>Location: {users location}</p>
-    <p>Profile:  
+    <p>Profile:
       <a href={address to users github page}>{address to users github page}</a>
     </p>
     <p>Followers: {users followers count}</p>
@@ -134,7 +144,7 @@ axios.get(urlString)
 
 */
 
-/* List of LS Instructors Github username's: 
+/* List of LS Instructors Github username's:
   tetondan
   dustinmyers
   justsml
