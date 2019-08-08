@@ -56,7 +56,7 @@ function createCard(profileObj) {
   cardInfo.appendChild(username);
   cardInfo.appendChild(location);
   cardInfo.appendChild(profile);
-  profile.appendChild(linkToPage);
+  cardInfo.appendChild(linkToPage);
   cardInfo.appendChild(followers);
   cardInfo.appendChild(following);
   cardInfo.appendChild(bio);
@@ -72,9 +72,10 @@ function createCard(profileObj) {
   name.textContent = profileObj.name;
   username.textContent = profileObj.login;
   location.textContent = `Location: ${profileObj.location}`;
-  profile.textContent = `Profile: ${profileObj.html_url}`;
+  
   linkToPage.href = profileObj.html_url;
-  linkToPage.textContent = profileObj.html_url;;
+  linkToPage.textContent = profileObj.html_url;
+  profile.textContent = `Profile: `;
   followers.textContent = `Followers: ${profileObj.followers}`;
   following.textContent = `Following: ${profileObj.following}`;
   bio.textContent = `Bio: ${profileObj.bio}`;
@@ -82,19 +83,15 @@ function createCard(profileObj) {
   return card;
 }
 
-// This gets my profile and makes the card ===
+// This gets a profile and makes the card ===
 function grabProfile(url) {
   axios.get(url)
     .then(response => {
       container.appendChild(createCard(response.data));
-      // console.log(response.data);
     });
-}
+};
 
 grabProfile('https://api.github.com/users/Tyler668');
-// grabProfile('https://github.com/rogermcconkiejr');
-// grabProfile('https://github.com/rojcewiczj');
-// grabProfile('https://github.com/tetondan');
 
 
 // This finds all my followers and makes cards for them ===
@@ -103,14 +100,11 @@ axios.get('https://api.github.com/users/Tyler668')
     const followersURL = response.data.followers_url;
     axios.get(followersURL)
       .then(response2 => {
-        // console.log(response2); // This .data will give the array of incomplete profiles if you want to just use that
         response2.data.forEach(e => {
           const followerProfile = e.login;
           grabProfile(`https://api.github.com/users/${followerProfile}`);
-
         });
       });
-
   });
 
 
