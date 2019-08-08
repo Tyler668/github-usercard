@@ -69,7 +69,7 @@ function createCard(profileObj){
 
   // Element content ===
   proPic.src = profileObj.avatar_url;
-  name.textContent - profileObj.name;
+  name.textContent = profileObj.name;
   username.textContent = profileObj.Login;
   location.textContent = `Location: ${profileObj.location}`;
   profile.textContent = `Profile: `;
@@ -86,25 +86,25 @@ function createCard(profileObj){
 axios.get('https://api.github.com/users/Tyler668')
 .then( response =>{
   container.appendChild(createCard(response.data));
+  console.log(response.data);
 });
 
 // This finds all my followers and makes cards for them ===
 axios.get('https://api.github.com/users/Tyler668')
 .then( response =>{
   const followersURL = response.data.followers_url;
-  // console.log(followersURL);
   axios.get(followersURL)
   .then(response =>{
     response.data.forEach(e =>{
       container.appendChild(createCard(e));
+      // console.log(e);
     })
-    
   });
 
 });
 
 
-// This found all the professor profiles using the array of just their handles, then makes cards for em ===
+// This found all the professor profiles using the array of just their handles, then makes cards for 'em ===
 followersArray.forEach(item =>{
 const urlString = `https://api.github.com/users/${item}`;
 axios.get(urlString)
