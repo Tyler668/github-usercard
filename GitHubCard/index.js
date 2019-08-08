@@ -25,18 +25,62 @@
 */
 
 const followersArray = [];
-axios.get('https://api.github.com/users/Tyler668')
-.then( response =>{
-  console.log(response.data);
-  profile = response.data;
-});
 
+
+const container = document.querySelector('.cards');
 
 function createCard(profileObj){
+  // Create elements ===
   const card = document.createElement('div');
   const proPic = document.createElement('img');
-  const cardInfo
+  const cardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const username = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const linkToPage = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+  // Structure elements ===
+  card.appendChild(proPic);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  profile.appendChild(linkToPage);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+
+  // Element class assignment ===
+  card.classList.add('card');
+  cardInfo.classList.add('card-info');
+  name.classList.add('name');
+  username.classList.add('username');
+
+  // Element content ===
+  proPic.src = profileObj.avatar_url;
+  name.textContent - profileObj.name;
+  username.textContent = profileObj.Login;
+  location.textContent = `Location: ${profileObj.location}`;
+  profile.textContent = `Profile: `;
+  linkToPage.href = profileObj.html_url;
+  linkToPage.textContent = `Go to user's page`;
+  followers.textContent = `Followers: ${profileObj.followers}`;
+  following.textContent = `Following: ${profileObj.following}`;
+  bio.textContent = `Bio: ${profileObj.bio}`;
+
+  return card;
 }
+
+
+axios.get('https://api.github.com/users/Tyler668')
+.then( response =>{
+  container.appendChild(createCard(response.data));
+});
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
